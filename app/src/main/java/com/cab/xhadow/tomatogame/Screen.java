@@ -13,11 +13,13 @@ import android.view.View;
 public class Screen extends View {
 
     private Paint paint = new Paint();
-    public static double accelx = .5;
-    public static double accely = .5;
+    public static double accelx;
+    public static double accely;
+    public static double frix = .001;
+    public static double friy = .001;
     public static double drainRad = 20;
-    public float drainx = getMeasuredWidth() - 20;
-    public float drainy = getMeasuredHeight() - 20;
+    public float drainx, drainy, leftwall1, topwall1, rightwall1, botwall1, leftwall2, topwall2,
+        rightwall2, botwall2;
 
     public Runnable animator = new Runnable() {
         @Override
@@ -41,6 +43,16 @@ public class Screen extends View {
 
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
+        drainx = (getMeasuredWidth() - 50);
+        drainy = (getMeasuredHeight() - 50);
+        leftwall1 = 0;
+        topwall1 = getMeasuredHeight() - 300;
+        rightwall1 = getMeasuredWidth() - 150;
+        botwall1 = getMeasuredHeight() - 290;
+        leftwall2 = 150;
+        topwall2 = getMeasuredHeight() - 160;
+        rightwall2 = getMeasuredWidth();
+        botwall2 = getMeasuredHeight() - 150;
         setMeasuredDimension(width, height);
     }
 
@@ -49,32 +61,49 @@ public class Screen extends View {
         c.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
 
         paint.setColor(Color.GREEN);
-        c.drawRect(0, 150, getMeasuredWidth() - 150, 200, paint);
-        //c.drawRect();
+        c.drawRect(leftwall1, topwall1, rightwall1, botwall1, paint);
 
         paint.setColor(Color.GREEN);
-        c.drawRect(150, 500, getMeasuredWidth(), 550, paint);
+        c.drawRect(leftwall2, topwall2, rightwall2, botwall2, paint);
 
         paint.setColor(Color.GRAY);
-        c.drawCircle(getMeasuredWidth() - 50, getMeasuredHeight() - 50, (float)drainRad, paint);
-        //c.drawCircle();
+        c.drawCircle(drainx, drainy, (float)drainRad, paint);
+
         paint.setColor(Color.RED);
         c.drawCircle((float) Tomato.x, (float) Tomato.y, Tomato.radius, paint);
     }
 
     protected void physics() {
-        Tomato.x += accelx;
-        Tomato.y += accely;
-        double difx = Tomato.x - (getMeasuredWidth() - 50);
-        double dify = Tomato.y - (getMeasuredHeight() - 50);
+        Tomato.x = Tomato.x + accelx - frix;
+        Tomato.y = Tomato.y + accely - friy;
+        double difx = Tomato.x - (drainx);
+        double dify = Tomato.y - (drainy);
         double dif = Math.sqrt(difx*difx + dify*dify);
-        if(dif < Tomato.radius + drainRad) {
+        if(dif < (Tomato.radius + drainRad)) {
             win();
+        }
+        if(Tomato.y + Tomato.radius > 0 && Tomato.x + Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall1
+            && Tomato.x - Tomato.radius < rightwall1 - 3 && Tomato.y < botwall1 - 5) {
+            Tomato.y = topwall1 - Tomato.radius;
+        }
+        if(Tomato.y + Tomato.radius < getMeasuredHeight() && Tomato.x + Tomato.radius > 0 &&
+                Tomato.y - Tomato.radius > topwall1 + 5 && Tomato.x - Tomato.radius < rightwall1 - 3 &&
+                Tomato.y - Tomato.radius < botwall1) {
+            Tomato.y = botwall1 + Tomato.radius;
+        }
+        if(Tomato.y - Tomato.radius > 0 && Tomato.x - Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall2
+                && Tomato.x + Tomato.radius > leftwall2 && Tomato.y < botwall2 - 1) {
+            Tomato.y = topwall2 - Tomato.radius;
+        }
+        if(Tomato.y - Tomato.radius < getMeasuredHeight() && Tomato.x - Tomato.radius > 0 &&
+                Tomato.y - Tomato.radius > topwall2 + 5 && Tomato.x + Tomato.radius > leftwall2 &&
+                Tomato.y - Tomato.radius < botwall2) {
+            Tomato.y = botwall2 + Tomato.radius;
         }
         if(Tomato.y - Tomato.radius < 0) {
             Tomato.y = 0 + Tomato.radius;
         }
-        if(Tomato.x - Tomato.radius < 0) {
+        if((Tomato.x - Tomato.radius) < 0) {
             Tomato.x = 0 + Tomato.radius;
         }
         if(Tomato.y + Tomato.radius > getMeasuredHeight()) {
@@ -83,11 +112,10 @@ public class Screen extends View {
         if(Tomato.x + Tomato.radius > getMeasuredWidth()) {
             Tomato.x = getMeasuredWidth() - Tomato.radius;
         }
-        //if(Tomato.y - Tomato.radius < 0 && Tomato.y + Tomato.radius > 0 &&
     }
 
     public void win() {
-        Tomato.x = 10;
-        Tomato.y = 10;
+        Tomato.x = 20;
+        Tomato.y = 20;
     }
 }
