@@ -46,13 +46,13 @@ public class Screen extends View {
         drainx = (getMeasuredWidth() - 50);
         drainy = (getMeasuredHeight() - 50);
         leftwall1 = 0;
-        topwall1 = getMeasuredHeight() - 300;
-        rightwall1 = getMeasuredWidth() - 150;
-        botwall1 = getMeasuredHeight() - 290;
-        leftwall2 = 150;
-        topwall2 = getMeasuredHeight() - 160;
+        topwall1 = getMeasuredHeight()/3;
+        rightwall1 = (getMeasuredWidth()/4) * 3;
+        botwall1 = topwall1 + 10;
+        leftwall2 = getMeasuredWidth()/4;
+        topwall2 = (getMeasuredHeight()/3) * 2;
         rightwall2 = getMeasuredWidth();
-        botwall2 = getMeasuredHeight() - 150;
+        botwall2 = topwall2 + 10;
         setMeasuredDimension(width, height);
     }
 
@@ -74,10 +74,40 @@ public class Screen extends View {
     }
 
     protected void physics() {
-        Tomato.xvelocity += .02 * accelx;
-        Tomato.yvelocity += .02 * accely;
-        Tomato.x = Tomato.x + (.5 * Tomato.xvelocity) - frix;
-        Tomato.y = Tomato.y + (.5 * Tomato.yvelocity) - friy;
+        Tomato.xvelocity += (.2 * accelx) + frix;
+        Tomato.yvelocity += (.2 * accely) + friy;
+        if(Tomato.xvelocity == 0) {
+            frix = 0;
+        }
+        if(Tomato.yvelocity == 0) {
+            friy = 0;
+        }
+        if(Tomato.xvelocity < 0) {
+            frix = .05;
+        }
+        if(Tomato.xvelocity > 0) {
+            frix = -.05;
+        }
+        if(Tomato.yvelocity < 0) {
+            friy = .05;
+        }
+        if(Tomato.xvelocity > 0) {
+            friy = -.05;
+        }
+        if(Tomato.xvelocity <= -5) {
+            Tomato.xvelocity = -5;
+        }
+        if(Tomato.xvelocity >= 5) {
+            Tomato.xvelocity = 5;
+        }
+        if(Tomato.yvelocity <= -6) {
+            Tomato.yvelocity = -6;
+        }
+        if(Tomato.yvelocity >= 6) {
+            Tomato.yvelocity = 6;
+        }
+        Tomato.x = Tomato.x + (Tomato.xvelocity);
+        Tomato.y = Tomato.y + (Tomato.yvelocity);
         double difx = Tomato.x - (drainx);
         double dify = Tomato.y - (drainy);
         double dif = Math.sqrt(difx*difx + dify*dify);
@@ -85,26 +115,26 @@ public class Screen extends View {
             win();
         }
         if(Tomato.y + Tomato.radius > 0 && Tomato.x + Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall1
-            && Tomato.x - Tomato.radius < rightwall1 - 3 && Tomato.y < botwall1 - 5) {
+            && Tomato.x - Tomato.radius < rightwall1 && Tomato.y + Tomato.radius < botwall1 - 1) {
             Tomato.y = topwall1 - Tomato.radius;
             Tomato.yvelocity = -Tomato.yvelocity;
         }
-        if(Tomato.y + Tomato.radius < getMeasuredHeight() && Tomato.x + Tomato.radius > 0 &&
-                Tomato.y - Tomato.radius > topwall1 + 5 && Tomato.x - Tomato.radius < rightwall1 - 3 &&
+        if(Tomato.y + Tomato.radius < topwall2 && Tomato.x + Tomato.radius > 0 &&
+                Tomato.y - Tomato.radius > topwall1 + 1 && Tomato.x - Tomato.radius < rightwall1 &&
                 Tomato.y - Tomato.radius < botwall1) {
             Tomato.y = botwall1 + Tomato.radius;
-            Tomato.yvelocity = Tomato.yvelocity;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
-        if(Tomato.y - Tomato.radius > 0 && Tomato.x - Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall2
-                && Tomato.x + Tomato.radius > leftwall2 && Tomato.y < botwall2 - 1) {
+        if(Tomato.y - Tomato.radius > botwall1 && Tomato.x - Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall2
+                && Tomato.x + Tomato.radius > leftwall2 && Tomato.y + Tomato.radius < botwall2 - 1) {
             Tomato.y = topwall2 - Tomato.radius;
             Tomato.yvelocity = -Tomato.yvelocity;
         }
         if(Tomato.y - Tomato.radius < getMeasuredHeight() && Tomato.x - Tomato.radius > 0 &&
-                Tomato.y - Tomato.radius > topwall2 + 5 && Tomato.x + Tomato.radius > leftwall2 &&
+                Tomato.y - Tomato.radius > topwall2 + 1 && Tomato.x + Tomato.radius > leftwall2 &&
                 Tomato.y - Tomato.radius < botwall2) {
             Tomato.y = botwall2 + Tomato.radius;
-            Tomato.yvelocity = Tomato.yvelocity;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
         if(Tomato.y - Tomato.radius < 0) {
             Tomato.y = 0 + Tomato.radius;
@@ -122,6 +152,7 @@ public class Screen extends View {
             Tomato.x = getMeasuredWidth() - Tomato.radius;
             Tomato.xvelocity = -Tomato.xvelocity;
         }
+
     }
 
     public void win() {
