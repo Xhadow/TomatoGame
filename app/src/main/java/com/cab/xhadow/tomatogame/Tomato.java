@@ -8,7 +8,8 @@ public class Tomato {
     public static double y = 20;
     public static float radius = 10;
     public boolean visible = true;
-
+    public static double xvelocity = 0;
+    public static double yvelocity = 0;
 
 
 }

@@ -15,8 +15,8 @@ public class Screen extends View {
     private Paint paint = new Paint();
     public static double accelx;
     public static double accely;
-    public static double frix = .001;
-    public static double friy = .001;
+    public static double frix = .01;
+    public static double friy = .01;
     public static double drainRad = 20;
     public float drainx, drainy, leftwall1, topwall1, rightwall1, botwall1, leftwall2, topwall2,
         rightwall2, botwall2;
@@ -74,8 +74,10 @@ public class Screen extends View {
     }
 
     protected void physics() {
-        Tomato.x = Tomato.x + accelx - frix;
-        Tomato.y = Tomato.y + accely - friy;
+        Tomato.xvelocity += .02 * accelx;
+        Tomato.yvelocity += .02 * accely;
+        Tomato.x = Tomato.x + (.5 * Tomato.xvelocity) - frix;
+        Tomato.y = Tomato.y + (.5 * Tomato.yvelocity) - friy;
         double difx = Tomato.x - (drainx);
         double dify = Tomato.y - (drainy);
         double dif = Math.sqrt(difx*difx + dify*dify);
@@ -85,37 +87,47 @@ public class Screen extends View {
         if(Tomato.y + Tomato.radius > 0 && Tomato.x + Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall1
             && Tomato.x - Tomato.radius < rightwall1 - 3 && Tomato.y < botwall1 - 5) {
             Tomato.y = topwall1 - Tomato.radius;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
         if(Tomato.y + Tomato.radius < getMeasuredHeight() && Tomato.x + Tomato.radius > 0 &&
                 Tomato.y - Tomato.radius > topwall1 + 5 && Tomato.x - Tomato.radius < rightwall1 - 3 &&
                 Tomato.y - Tomato.radius < botwall1) {
             Tomato.y = botwall1 + Tomato.radius;
+            Tomato.yvelocity = Tomato.yvelocity;
         }
         if(Tomato.y - Tomato.radius > 0 && Tomato.x - Tomato.radius > 0 && Tomato.y + Tomato.radius > topwall2
                 && Tomato.x + Tomato.radius > leftwall2 && Tomato.y < botwall2 - 1) {
             Tomato.y = topwall2 - Tomato.radius;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
         if(Tomato.y - Tomato.radius < getMeasuredHeight() && Tomato.x - Tomato.radius > 0 &&
                 Tomato.y - Tomato.radius > topwall2 + 5 && Tomato.x + Tomato.radius > leftwall2 &&
                 Tomato.y - Tomato.radius < botwall2) {
             Tomato.y = botwall2 + Tomato.radius;
+            Tomato.yvelocity = Tomato.yvelocity;
         }
         if(Tomato.y - Tomato.radius < 0) {
             Tomato.y = 0 + Tomato.radius;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
         if((Tomato.x - Tomato.radius) < 0) {
             Tomato.x = 0 + Tomato.radius;
+            Tomato.xvelocity = -Tomato.xvelocity;
         }
         if(Tomato.y + Tomato.radius > getMeasuredHeight()) {
             Tomato.y = getMeasuredHeight() - Tomato.radius;
+            Tomato.yvelocity = -Tomato.yvelocity;
         }
         if(Tomato.x + Tomato.radius > getMeasuredWidth()) {
             Tomato.x = getMeasuredWidth() - Tomato.radius;
+            Tomato.xvelocity = -Tomato.xvelocity;
         }
     }
 
     public void win() {
         Tomato.x = 20;
         Tomato.y = 20;
+        Tomato.xvelocity = 0;
+        Tomato.yvelocity = 0;
     }
 }
